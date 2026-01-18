@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "furl-ai-exercise"
+version = "0.1.0"
+description = "AI engineer interview exercise"
+authors = ["Furl Careers <careers@furl.ai>"]
+packages = [{ include = "furl_ai_exercise", from = "src" }]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+langchain = "1.2.4"
+langgraph = "1.0.6"
+langchain-openai = "^0.2.9"
+pydantic = "^2.7.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.2"
+
+[tool.pytest.ini_options]
+addopts = "-q"
+pythonpath = [".", "src"]
+filterwarnings = [
+  "ignore:Core Pydantic V1 functionality isn't compatible with Python 3.14 or greater\\.:UserWarning:langchain_core._api.deprecation",
+  "ignore:'asyncio.iscoroutinefunction' is deprecated.*:DeprecationWarning:langchain_core.runnables.utils",
+]
