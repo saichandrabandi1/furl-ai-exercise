@@ -7,8 +7,10 @@ packages = [{ include = "furl_ai_exercise", from = "src" }]
 
 [tool.poetry.dependencies]
 python = "^3.12"
-langgraph = ">=0.0.20,<0.1.0"
+langgraph = "0.0.20"
 pydantic = "^2.7.0"
+langchain = "0.1.17"
+langchain-openai = "0.1.6"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.2"

@@ -22,7 +22,7 @@ def build_prompt(query: SoftwareQuery) -> str:
         f"CPU Architecture: {query.cpu_arch}\n"
     )
     if query.version:
-        prompt += f"Requested Version: {query.version}\n"
+        prompt += "\n\nReturn only a valid JSON object with keys: release_notes_url, download_url, and version."
     return prompt
 
 
@@ -56,18 +56,39 @@ def build_release_graph(llm: Runnable) -> Runnable:
 
 
 def run_release_graph(query: SoftwareQuery, llm: Runnable) -> ReleaseInfo:
-    """
-    Execute the release graph and return the parsed release info.
-    """
 
     # Step 1: Build the prompt text for the LLM
     prompt = build_prompt(query)
 
-    # Step 2: Call the LLM (mocked in tests)
+# Step 2: Call the LLM (mocked in tests)
     response = llm.invoke(prompt)
 
-    # Step 3: Parse the JSON response into a ReleaseInfo object
-    release_info = parse_release_info(response)
+    print("Raw model output:", response)
 
-    # Step 4: Return structured result
+# Handle AIMessage or empty string
+    if hasattr(response, "content"):
+        response = response.content
+
+    # if not response or not response.strip():
+        # raise ValueError("Model returned an empty response")
+
+# Ensure response is a string
+    response = str(response).strip()
+
+
+# Remove Markdown code fences if present
+    if response.startswith("```"):
+        response = response.strip("`")
+        response = response.replace("json", "", 1).strip()
+        response = response.strip("`").strip()
+
+    print("Cleaned model output:", response)
+
+# Try parsing JSON safely
+    try:
+        release_info = parse_release_info(response)
+    except Exception as e:
+        print("Failed to parse model response:", response)
+        raise e
+
     return release_info
