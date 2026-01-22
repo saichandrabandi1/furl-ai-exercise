@@ -1,4 +1,5 @@
 from __future__ import annotations
+from langgraph.graph import StateGraph, END
 
 import json
 from typing import TypedDict
@@ -58,5 +59,15 @@ def run_release_graph(query: SoftwareQuery, llm: Runnable) -> ReleaseInfo:
     """
     Execute the release graph and return the parsed release info.
     """
-    # TODO: build the graph, invoke it with the query, and parse the response.
-    raise NotImplementedError("Implement run_release_graph in service.py")
+
+    # Step 1: Build the prompt text for the LLM
+    prompt = build_prompt(query)
+
+    # Step 2: Call the LLM (mocked in tests)
+    response = llm.invoke(prompt)
+
+    # Step 3: Parse the JSON response into a ReleaseInfo object
+    release_info = parse_release_info(response)
+
+    # Step 4: Return structured result
+    return release_info
